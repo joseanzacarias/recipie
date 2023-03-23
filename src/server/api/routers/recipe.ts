@@ -27,10 +27,10 @@ export const recipeRouter = createTRPCRouter({
 
   create: protectedProcedure
     .input(RecipeModel.omit({ id: true, userId: true }))
-    .mutation(({ ctx, input }) =>
+    .mutation(({ ctx, input: recipe }) =>
       ctx.prisma.recipe.create({
         data: {
-          ...input,
+          ...recipe,
           userId: ctx.session.user.id,
         },
       })
@@ -47,7 +47,7 @@ export const recipeRouter = createTRPCRouter({
 
   delete: protectedProcedure
     .input(z.string())
-    .mutation(async ({ ctx, input: recipeId }) =>
+    .mutation(({ ctx, input: recipeId }) =>
       ctx.prisma.recipe.deleteMany({
         where: {
           id: recipeId,
