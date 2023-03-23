@@ -7,11 +7,10 @@ export const ingredientRouter = createTRPCRouter({
     ctx.prisma.ingredient.findMany({ where: { userId: ctx.session.user.id } })
   ),
 
-  getById: protectedProcedure.input(z.string()).query(
-    async ({ input, ctx }) =>
-      await ctx.prisma.ingredient.findFirst({
-        where: { id: input, userId: ctx.session.user.id },
-      })
+  getById: protectedProcedure.input(z.string()).query(({ input, ctx }) =>
+    ctx.prisma.ingredient.findFirst({
+      where: { id: input, userId: ctx.session.user.id },
+    })
   ),
 
   create: protectedProcedure
@@ -23,11 +22,10 @@ export const ingredientRouter = createTRPCRouter({
         price: z.number().nullable(),
       })
     )
-    .mutation(
-      async ({ ctx, input }) =>
-        await ctx.prisma.ingredient.create({
-          data: { ...input, userId: ctx.session.user.id },
-        })
+    .mutation(({ ctx, input }) =>
+      ctx.prisma.ingredient.create({
+        data: { ...input, userId: ctx.session.user.id },
+      })
     ),
 
   update: protectedProcedure
@@ -40,20 +38,18 @@ export const ingredientRouter = createTRPCRouter({
         price: z.number().nullable().optional(),
       })
     )
-    .mutation(
-      async ({ ctx, input }) =>
-        await ctx.prisma.ingredient.updateMany({
-          where: { id: input.id, userId: ctx.session.user.id },
-          data: {
-            ...input,
-          },
-        })
+    .mutation(({ ctx, input }) =>
+      ctx.prisma.ingredient.updateMany({
+        where: { id: input.id, userId: ctx.session.user.id },
+        data: {
+          ...input,
+        },
+      })
     ),
 
-  delete: protectedProcedure.input(z.string()).mutation(
-    async ({ ctx, input }) =>
-      await ctx.prisma.ingredient.deleteMany({
-        where: { id: input, userId: ctx.session.user.id },
-      })
+  delete: protectedProcedure.input(z.string()).mutation(({ ctx, input }) =>
+    ctx.prisma.ingredient.deleteMany({
+      where: { id: input, userId: ctx.session.user.id },
+    })
   ),
 });
