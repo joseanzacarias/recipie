@@ -107,16 +107,19 @@ model Recipe {
   id     String @id @default(cuid())
   userId String
 
-  name String
-  type String
+  name         String
+  type         String
+  coverPhotoId String?
+  coverPhoto   RecipePhoto? @relation(fields: [coverPhotoId], references: [id], name: "recipe_with_photo", onDelete: NoAction, onUpdate: NoAction)
 
   ingredients RecipeIngredient[]
-  photos      RecipePhoto[]
+  photos      RecipePhoto[]      @relation(name: "recipe_photo")
   steps       RecipeStep[]
   tags        RecipeTag[]
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id])
 
+  @@unique([coverPhotoId])
   @@index([userId])
 }
 
@@ -166,11 +169,11 @@ model RecipeTag {
 }
 
 model RecipePhoto {
-  id       String @id @default(cuid())
-  url      String
-  isCover   Boolean
-  recipeId String
-  recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  id                   String  @id @default(cuid())
+  url                  String
+  recipeId             String
+  recipe               Recipe  @relation(fields: [recipeId], references: [id], name: "recipe_photo")
+  recipeWithCoverPhoto Recipe? @relation(name: "recipe_with_photo")
 
   @@index([recipeId])
 }

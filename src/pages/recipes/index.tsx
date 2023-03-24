@@ -21,7 +21,7 @@ const Recipes: NextPage = () => {
           <input type="text" aria-label="Filter" />
         </div>
         {/* recipes list */}
-        {recipes?.map(({ name, photos, tags }) => (
+        {recipes?.map(({ name, coverPhoto, tags }) => (
           <div className=" flex h-24 rounded-lg bg-neutral-100 drop-shadow-md">
             <div className="m-4 mr-auto flex flex-col justify-between">
               <div className="text-xl capitalize">{name}</div>
@@ -36,16 +36,18 @@ const Recipes: NextPage = () => {
               </div>
             </div>
             {/* photo */}
-            <div className="relative h-full w-24 rounded-r-lg">
-              <Image
-                alt={`${name} cover photo`}
-                src={
-                  photos.find((photo) => photo.isCover)?.url ??
-                  "https://img.freepik.com/premium-vector/vegetable-fruit-vegetarian-food-symbol-cartoon-illustration-vector_201904-1566.jpg"
-                }
-                fill
-              />
-            </div>
+            {coverPhoto && (
+              <div className="relative h-full w-24 rounded-r-lg">
+                <Image
+                  alt={`${name} cover photo`}
+                  src={
+                    coverPhoto.url ??
+                    "https://img.freepik.com/premium-vector/vegetable-fruit-vegetarian-food-symbol-cartoon-illustration-vector_201904-1566.jpg"
+                  }
+                  fill
+                />
+              </div>
+            )}
           </div>
         ))}
       </div>

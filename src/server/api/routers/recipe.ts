@@ -1,4 +1,4 @@
-import { RecipeModel, RecipeTagModel } from "prisma/zod";
+import { RecipeModel, RecipeStepModel, RecipeTagModel } from "prisma/zod";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
@@ -8,7 +8,7 @@ export const recipeRouter = createTRPCRouter({
     ctx.prisma.recipe.findMany({
       where: { userId: ctx.session.user.id },
       include: {
-        photos: true,
+        coverPhoto: true,
         tags: true,
       },
     })
@@ -65,6 +65,14 @@ export const recipeRouter = createTRPCRouter({
     .mutation(({ ctx, input: recipeTag }) =>
       ctx.prisma.recipeTag.create({
         data: recipeTag,
+      })
+    ),
+
+  addStep: protectedProcedure
+    .input(RecipeStepModel.omit({ id: true }))
+    .mutation(({ ctx, input: recipeStep }) =>
+      ctx.prisma.recipeStep.create({
+        data: recipeStep,
       })
     ),
 });
