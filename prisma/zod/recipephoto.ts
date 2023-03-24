@@ -5,6 +5,7 @@ import { CompleteRecipe, RelatedRecipeModel } from "./index"
 export const RecipePhotoModel = z.object({
   id: z.string(),
   url: z.string(),
+  isCover: z.boolean(),
   recipeId: z.string(),
 })
 

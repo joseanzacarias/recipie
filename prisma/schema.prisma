@@ -168,6 +168,7 @@ model RecipeTag {
 model RecipePhoto {
   id       String @id @default(cuid())
   url      String
+  isCover   Boolean
   recipeId String
   recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
 
