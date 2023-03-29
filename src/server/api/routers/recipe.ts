@@ -1,4 +1,9 @@
-import { RecipeModel, RecipeStepModel, RecipeTagModel } from "prisma/zod";
+import {
+  RecipeIngredientModel,
+  RecipeModel,
+  RecipeStepModel,
+  RecipeTagModel,
+} from "prisma/zod";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
@@ -73,6 +78,38 @@ export const recipeRouter = createTRPCRouter({
     .mutation(({ ctx, input: recipeStep }) =>
       ctx.prisma.recipeStep.create({
         data: recipeStep,
+      })
+    ),
+
+  addIngredient: protectedProcedure
+    .input(RecipeIngredientModel)
+    .mutation(({ ctx, input: recipeIngredient }) =>
+      ctx.prisma.recipeIngredient.create({
+        data: recipeIngredient,
+      })
+    ),
+
+  updateIngredient: protectedProcedure
+    .input(RecipeIngredientModel)
+    .mutation(({ ctx, input: recipeIngredient }) =>
+      ctx.prisma.recipeIngredient.update({
+        where: {
+          recipeId_ingredientId: {
+            recipeId: recipeIngredient.recipeId,
+            ingredientId: recipeIngredient.ingredientId,
+          },
+        },
+        data: recipeIngredient,
+      })
+    ),
+
+  removeIngredient: protectedProcedure
+    .input(RecipeIngredientModel.pick({ ingredientId: true, recipeId: true }))
+    .mutation(({ ctx, input: recipeIngredient }) =>
+      ctx.prisma.recipeIngredient.delete({
+        where: {
+          recipeId_ingredientId: recipeIngredient,
+        },
       })
     ),
 });
