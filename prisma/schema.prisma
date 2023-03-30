@@ -21,8 +21,6 @@ generator zod {
   // useDecimalJs          = false // (default) represent the prisma Decimal type using as a JS number
   useDecimalJs = true // represent the prisma Decimal type using Decimal.js (as Prisma does)
 
-  imports = null // (default) will import the referenced file in generated schemas to be used via imports.someExportedVariable
-
   // https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-by-null-values
   prismaJsonNullability = true // (default) uses prisma's scheme for JSON field nullability
   // prismaJsonNullability = false // allows null assignment to optional JSON fields
@@ -107,16 +105,19 @@ model Recipe {
   id     String @id @default(cuid())
   userId String
 
-  name String
-  type String
+  name         String
+  type         String
+  coverPhotoId String?
+  coverPhoto   RecipePhoto? @relation(fields: [coverPhotoId], references: [id], name: "recipe_with_photo", onDelete: NoAction, onUpdate: NoAction)
 
   ingredients RecipeIngredient[]
-  photos      RecipePhoto[]
+  photos      RecipePhoto[]      @relation(name: "recipe_photo")
   steps       RecipeStep[]
   tags        RecipeTag[]
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id])
 
+  @@unique([coverPhotoId])
   @@index([userId])
 }
 
@@ -166,10 +167,11 @@ model RecipeTag {
 }
 
 model RecipePhoto {
-  id       String @id @default(cuid())
-  url      String
-  recipeId String
-  recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  id                   String  @id @default(cuid())
+  url                  String
+  recipeId             String
+  recipe               Recipe  @relation(fields: [recipeId], references: [id], name: "recipe_photo")
+  recipeWithCoverPhoto Recipe? @relation(name: "recipe_with_photo")
 
   @@index([recipeId])
 }

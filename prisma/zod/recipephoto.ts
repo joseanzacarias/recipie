@@ -1,5 +1,4 @@
 import * as z from "zod"
-import * as imports from "../null"
 import { CompleteRecipe, RelatedRecipeModel } from "./index"
 
 export const RecipePhotoModel = z.object({
@@ -10,6 +9,7 @@ export const RecipePhotoModel = z.object({
 
 export interface CompleteRecipePhoto extends z.infer<typeof RecipePhotoModel> {
   recipe: CompleteRecipe
+  recipeWithCoverPhoto?: CompleteRecipe | null
 }
 
 /**
@@ -19,4 +19,5 @@ export interface CompleteRecipePhoto extends z.infer<typeof RecipePhotoModel> {
  */
 export const RelatedRecipePhotoModel: z.ZodSchema<CompleteRecipePhoto> = z.lazy(() => RecipePhotoModel.extend({
   recipe: RelatedRecipeModel,
+  recipeWithCoverPhoto: RelatedRecipeModel.nullish(),
 }))

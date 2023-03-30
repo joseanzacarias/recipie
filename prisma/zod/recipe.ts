@@ -1,15 +1,16 @@
 import * as z from "zod"
-import * as imports from "../null"
-import { CompleteRecipeIngredient, RelatedRecipeIngredientModel, CompleteRecipePhoto, RelatedRecipePhotoModel, CompleteRecipeStep, RelatedRecipeStepModel, CompleteRecipeTag, RelatedRecipeTagModel, CompleteUser, RelatedUserModel } from "./index"
+import { CompleteRecipePhoto, RelatedRecipePhotoModel, CompleteRecipeIngredient, RelatedRecipeIngredientModel, CompleteRecipeStep, RelatedRecipeStepModel, CompleteRecipeTag, RelatedRecipeTagModel, CompleteUser, RelatedUserModel } from "./index"
 
 export const RecipeModel = z.object({
   id: z.string(),
   userId: z.string(),
   name: z.string(),
   type: z.string(),
+  coverPhotoId: z.string().nullish(),
 })
 
 export interface CompleteRecipe extends z.infer<typeof RecipeModel> {
+  coverPhoto?: CompleteRecipePhoto | null
   ingredients: CompleteRecipeIngredient[]
   photos: CompleteRecipePhoto[]
   steps: CompleteRecipeStep[]
@@ -23,6 +24,7 @@ export interface CompleteRecipe extends z.infer<typeof RecipeModel> {
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
 export const RelatedRecipeModel: z.ZodSchema<CompleteRecipe> = z.lazy(() => RecipeModel.extend({
+  coverPhoto: RelatedRecipePhotoModel.nullish(),
   ingredients: RelatedRecipeIngredientModel.array(),
   photos: RelatedRecipePhotoModel.array(),
   steps: RelatedRecipeStepModel.array(),
